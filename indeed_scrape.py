@@ -11,11 +11,16 @@ def graph_results(search_results, job_to_search):
     lons, lats, hover_texts = [], [], []
     for result in search_results:
         lon = search_results[result]['coordinates'][0]
-        lons.append(lon)
         lat = search_results[result]['coordinates'][1]
+        if lon in lons:
+            if lat in lats:
+                while lon in lons:
+                    lon += .1
+        lons.append(lon)
         lats.append(lat)
         title = search_results[result]['title']
-        hover_texts.append(title)
+        company = search_results[result]['company']
+        hover_texts.append(f'{title}, {company}')
     data = [{
         'type': 'scattergeo',
         'lon': lons,
@@ -23,7 +28,13 @@ def graph_results(search_results, job_to_search):
         'text': hover_texts,
     }]
 
-    my_layout = Layout(title=f"{job_to_search.title()} Jobs in Canada", geo_scope='north america')
+    my_layout = Layout(title=f"{job_to_search.title()} Jobs in Canada", height=500,
+                       margin={"r": 10, "t": 10, "l": 10, "b": 10},
+                       geo_scope='north america', geo_fitbounds="locations", geo_showcoastlines=True,
+                       geo_coastlinecolor="RebeccaPurple", geo_showland=True, geo_landcolor="LightGreen",
+                       geo_showocean=True, geo_oceancolor="LightBlue", geo_showlakes=True, geo_lakecolor="Blue",
+                       geo_showrivers=True, geo_rivercolor="Blue", geo_showcountries=True, geo_countrycolor="Black",
+                       geo_showsubunits=True, geo_subunitcolor="Black")
 
     fig = {'data': data, 'layout': my_layout}
 
